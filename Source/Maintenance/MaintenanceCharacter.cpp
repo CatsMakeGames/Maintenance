@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MaintenanceCharacter.h"
+
+#include "DrawDebugHelpers.h"
 #include "MaintenanceProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -11,6 +13,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "Kismet/KismetMathLibrary.h"
+#include "Pickup/HoldableActorComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -19,8 +23,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AMaintenanceCharacter::AMaintenanceCharacter()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -29,8 +31,10 @@ AMaintenanceCharacter::AMaintenanceCharacter()
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	ActorHoldingPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ActorHoldingPosition"));
+	ActorHoldingPosition->SetupAttachment(RootComponent);
 	
 }
 
@@ -64,6 +68,12 @@ void AMaintenanceCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("TurnRate", this, &AMaintenanceCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMaintenanceCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AMaintenanceCharacter::Pickup);
+
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::Interact);
+
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMaintenanceCharacter::Throw);
 }
 
 void AMaintenanceCharacter::MoveForward(float Value)
@@ -96,3 +106,60 @@ void AMaintenanceCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+void AMaintenanceCharacter::Interact()
+{
+}
+
+void AMaintenanceCharacter::Pickup()
+{
+	if(CurrentlyHeldActor == nullptr)
+	{
+		//do line trace
+		FHitResult hit;
+		FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
+		FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
+			InteractionLenght;
+
+		FCollisionQueryParams params = FCollisionQueryParams();
+		params.AddIgnoredActor(this);
+
+		GetWorld()->LineTraceSingleByChannel(hit, start, start + end, ECollisionChannel::ECC_Camera, params);
+
+		if (hit.bBlockingHit)
+		{
+			if (hit.GetActor() != nullptr)
+			{
+				if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr)
+				{
+					UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(
+						hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()));
+					if (comp != nullptr)
+					{
+						CurrentlyHeldActor = hit.GetActor();
+						CurrentlyHeldActor->SetActorEnableCollision(false);
+						CurrentlyHeldActor->DisableComponentsSimulatePhysics();
+						CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+						CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,
+						                                      FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+						comp->BePickedUp();
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(CurrentlyHeldActor->FindComponentByClass(UHoldableActorComponent::StaticClass()));
+		comp->BeDropped();
+		
+		CurrentlyHeldActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		CurrentlyHeldActor->SetActorEnableCollision(true);
+	
+		CurrentlyHeldActor = nullptr;
+	}
+}
+
+void AMaintenanceCharacter::Throw()
+{
+	
+}

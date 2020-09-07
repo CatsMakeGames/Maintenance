@@ -14,9 +14,11 @@ class AMaintenanceCharacter : public ACharacter
 	GENERATED_BODY()
 
 	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* ActorHoldingPosition;
 
 public:
 	AMaintenanceCharacter();
@@ -32,6 +34,12 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
+	float InteractionLenght = 500.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
+	AActor* CurrentlyHeldActor = nullptr;
 
 protected:
 
@@ -53,6 +61,14 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	UFUNCTION(BlueprintCallable)
+	void Interact();
+
+	UFUNCTION(BlueprintCallable)
+    void Pickup();
+
+	UFUNCTION(BlueprintCallable)
+    void Throw();
 	
 protected:
 	// APawn interface
