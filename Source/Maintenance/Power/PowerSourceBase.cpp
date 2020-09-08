@@ -4,6 +4,8 @@
 #include "PowerSourceBase.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Maintenance/MaintenanceCharacter.h"
+#include "Maintenance/Door/KeyComponent.h"
 
 // Sets default values
 APowerSourceBase::APowerSourceBase()
@@ -29,24 +31,40 @@ void APowerSourceBase::Tick(float DeltaTime)
 
 void APowerSourceBase::Interact_Implementation(AActor* Interactor, UActorComponent* InteractedComponent)
 {
-	if(!bActivated)
+	if(!bNeedsKey)
 	{
-		bActivated = true;
-		OnPowerStateChanged();
-		
-		if(ActivationSound != nullptr)
+		if(!bActivated)
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(),ActivationSound,GetActorLocation(),GetActorRotation());
+			bActivated = true;
+			OnPowerStateChanged();
+		
+			if(ActivationSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(),ActivationSound,GetActorLocation(),GetActorRotation());
+			}
+		}
+		else if(bToggleable)
+		{
+			bActivated = false;
+			OnPowerStateChanged();
+
+			if(DeactivationSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(),DeactivationSound,GetActorLocation(),GetActorRotation());
+			}
 		}
 	}
-	else if(bToggleable)
-	{
-		bActivated = false;
-		OnPowerStateChanged();
+}
 
-		if(DeactivationSound != nullptr)
+void APowerSourceBase::UseItem_Implementation(AActor* Item, UActorComponent* InteractedComponent)
+{
+	UActorComponent *keyComp = Item->FindComponentByClass(UKeyComponent::StaticClass());
+
+	if (keyComp != nullptr)
+	{
+		if (Cast<UKeyComponent>(keyComp)->KeyId == NeededKeyId)
 		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(),DeactivationSound,GetActorLocation(),GetActorRotation());
+			bNeedsKey = false;
 		}
 	}
 }

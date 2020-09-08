@@ -68,7 +68,7 @@ protected:
 	void Interact();
 
 	UFUNCTION(BlueprintCallable)
-    void Pickup();
+    void UseItem();
 
 	UFUNCTION(BlueprintCallable)
     void Throw();
@@ -93,3 +93,4 @@ public:
 
 };
 
+typedef AMaintenanceCharacter APlayer;

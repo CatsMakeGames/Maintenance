@@ -35,10 +35,10 @@ AMaintenanceCharacter::AMaintenanceCharacter()
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	ActorHoldingPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ActorHoldingPosition"));
-	ActorHoldingPosition->SetupAttachment(RootComponent);
+	ActorHoldingPosition->SetupAttachment(FirstPersonCameraComponent);
 
 	ActorDroppingPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ActorDroppingPosition"));
-	ActorDroppingPosition->SetupAttachment(RootComponent);
+	ActorDroppingPosition->SetupAttachment(FirstPersonCameraComponent);
 	
 }
 
@@ -73,7 +73,7 @@ void AMaintenanceCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMaintenanceCharacter::LookUpAtRate);
 
-	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &AMaintenanceCharacter::Pickup);
+	PlayerInputComponent->BindAction("UseItem", IE_Pressed, this, &AMaintenanceCharacter::UseItem);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::Interact);
 
@@ -127,23 +127,43 @@ void AMaintenanceCharacter::Interact()
 	{
 		if (hit.GetActor() != nullptr)
 		{
-			if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+			if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr && CurrentlyHeldActor == nullptr)
 			{
-				IInteractionInterface::Execute_Interact(hit.GetActor(),this,hit.GetComponent());
+				UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(
+                    hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()));
+				if (comp != nullptr)
+				{
+					CurrentlyHeldActor = hit.GetActor();
+					CurrentlyHeldActor->SetActorEnableCollision(false);
+					CurrentlyHeldActor->DisableComponentsSimulatePhysics();
+					CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+					CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,
+                                                          FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+					comp->BePickedUp();
+				}
+			}
+			else
+			{
+				if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+				{
+					IInteractionInterface::Execute_Interact(hit.GetActor(),this,hit.GetComponent());
+				}
 			}
 		}
 	}
 }
 
-void AMaintenanceCharacter::Pickup()
+
+
+void AMaintenanceCharacter::UseItem()
 {
-	if(CurrentlyHeldActor == nullptr)
+	if(CurrentlyHeldActor != nullptr)
 	{
 		//do line trace
 		FHitResult hit;
 		FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
 		FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
-			InteractionLenght;
+            InteractionLenght;
 
 		FCollisionQueryParams params = FCollisionQueryParams();
 		params.AddIgnoredActor(this);
@@ -154,25 +174,23 @@ void AMaintenanceCharacter::Pickup()
 		{
 			if (hit.GetActor() != nullptr)
 			{
-				if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr)
+				if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
 				{
-					UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(
-						hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()));
-					if (comp != nullptr)
-					{
-						CurrentlyHeldActor = hit.GetActor();
-						CurrentlyHeldActor->SetActorEnableCollision(false);
-						CurrentlyHeldActor->DisableComponentsSimulatePhysics();
-						CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
-						CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,
-						                                      FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-						comp->BePickedUp();
-					}
+					IInteractionInterface::Execute_UseItem(hit.GetActor(),CurrentlyHeldActor,hit.GetComponent()); // for stuff like keys
 				}
 			}
 		}
+
+		if (CurrentlyHeldActor->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(CurrentlyHeldActor) != nullptr))
+		{
+			IInteractionInterface::Execute_UseItemInHand(CurrentlyHeldActor,this);//for stuff like flashlight
+		}
 	}
-	else
+}
+
+void AMaintenanceCharacter::Throw()
+{
+	if(CurrentlyHeldActor != nullptr)
 	{
 		UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(CurrentlyHeldActor->FindComponentByClass(UHoldableActorComponent::StaticClass()));
 		comp->BeDropped();
@@ -182,9 +200,4 @@ void AMaintenanceCharacter::Pickup()
 		CurrentlyHeldActor->SetActorLocation(ActorDroppingPosition->GetComponentLocation());
 		CurrentlyHeldActor = nullptr;
 	}
-}
-
-void AMaintenanceCharacter::Throw()
-{
-	
 }

@@ -53,7 +53,15 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Sound)
 	USoundBase*DeactivationSound;
 
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	int NeededKeyId = 0;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	bool bNeedsKey = false;
+
 	virtual  void Interact_Implementation(AActor* Interactor, UActorComponent* InteractedComponent) override;
+
+	virtual  void UseItem_Implementation(AActor* Item, UActorComponent* InteractedComponent) override;
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void OnPowerStateChanged();

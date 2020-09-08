@@ -24,4 +24,10 @@ class MAINTENANCE_API IInteractionInterface
 public:
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void Interact(AActor*Interactor,UActorComponent*InteractedComponent);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void UseItem(AActor*Item,UActorComponent*InteractedComponent);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void UseItemInHand(AActor*HoldingActor);
 };
