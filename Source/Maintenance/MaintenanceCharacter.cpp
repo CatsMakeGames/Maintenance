@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
+#include "InteractionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
@@ -35,6 +36,9 @@ AMaintenanceCharacter::AMaintenanceCharacter()
 
 	ActorHoldingPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ActorHoldingPosition"));
 	ActorHoldingPosition->SetupAttachment(RootComponent);
+
+	ActorDroppingPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ActorDroppingPosition"));
+	ActorDroppingPosition->SetupAttachment(RootComponent);
 	
 }
 
@@ -108,6 +112,27 @@ void AMaintenanceCharacter::LookUpAtRate(float Rate)
 
 void AMaintenanceCharacter::Interact()
 {
+	//do line trace
+	FHitResult hit;
+	FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
+	FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
+        InteractionLenght;
+
+	FCollisionQueryParams params = FCollisionQueryParams();
+	params.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(hit, start, start + end, ECollisionChannel::ECC_Camera, params);
+
+	if (hit.bBlockingHit)
+	{
+		if (hit.GetActor() != nullptr)
+		{
+			if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+			{
+				IInteractionInterface::Execute_Interact(hit.GetActor(),this,hit.GetComponent());
+			}
+		}
+	}
 }
 
 void AMaintenanceCharacter::Pickup()
@@ -154,7 +179,7 @@ void AMaintenanceCharacter::Pickup()
 		
 		CurrentlyHeldActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		CurrentlyHeldActor->SetActorEnableCollision(true);
-	
+		CurrentlyHeldActor->SetActorLocation(ActorDroppingPosition->GetComponentLocation());
 		CurrentlyHeldActor = nullptr;
 	}
 }

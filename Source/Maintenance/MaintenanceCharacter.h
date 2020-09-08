@@ -20,6 +20,9 @@ class AMaintenanceCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	USceneComponent* ActorHoldingPosition;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* ActorDroppingPosition;
+
 public:
 	AMaintenanceCharacter();
 
