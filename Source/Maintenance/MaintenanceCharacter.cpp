@@ -77,7 +77,13 @@ void AMaintenanceCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::Interact);
 
-	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMaintenanceCharacter::Throw);
+	PlayerInputComponent->BindAction("Throw", IE_Released, this, &AMaintenanceCharacter::Throw);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMaintenanceCharacter::BeginThrow);
+}
+
+void AMaintenanceCharacter::ChangeToThrow()
+{
+	bIsThrowing = true;
 }
 
 void AMaintenanceCharacter::MoveForward(float Value)
@@ -198,6 +204,19 @@ void AMaintenanceCharacter::Throw()
 		CurrentlyHeldActor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		CurrentlyHeldActor->SetActorEnableCollision(true);
 		CurrentlyHeldActor->SetActorLocation(ActorDroppingPosition->GetComponentLocation());
+		if(bIsThrowing)
+		{
+			bIsThrowing = false;
+			comp->BeThrown(GetFirstPersonCameraComponent()->GetForwardVector()* ThrowStrength);		
+		}
+		
+		GetWorldTimerManager().ClearTimer(ThrowTimerHandle);
+		
 		CurrentlyHeldActor = nullptr;
 	}
+}
+
+void AMaintenanceCharacter::BeginThrow()
+{
+	GetWorldTimerManager().SetTimer(ThrowTimerHandle,this,&AMaintenanceCharacter::ChangeToThrow,ThrowTime,false);
 }

@@ -19,7 +19,13 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+private:
+	FVector _impulse;
 
+	FTimerHandle ImpulseApplyTimerHandle;
+
+	void ApplyImpulseToComponents();
 public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=PhysicsComponents)
 	TArray<UStaticMeshComponent*>StaticMeshPhysicsComponents;
@@ -32,6 +38,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void BeDropped();
+
+	UFUNCTION(BlueprintCallable)
+    virtual void BeThrown(FVector impulse);
 
 	UFUNCTION(BlueprintCallable)
     virtual void BePickedUp();

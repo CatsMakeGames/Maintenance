@@ -48,6 +48,27 @@ void UHoldableActorComponent::BeginPlay()
 	}
 }
 
+void UHoldableActorComponent::ApplyImpulseToComponents()
+{
+
+	if (SkeletalMeshPhysicsComponents.Num() > 0)
+	{
+		for (int i = 0; i < SkeletalMeshPhysicsComponents.Num(); i++)
+		{
+			SkeletalMeshPhysicsComponents[i]->AddImpulse(_impulse);
+		}
+	}
+
+	if (StaticMeshPhysicsComponents.Num() > 0)
+	{
+		for (int i = 0; i < StaticMeshPhysicsComponents.Num(); i++)
+		{
+			StaticMeshPhysicsComponents[i]->AddImpulse(_impulse);
+		}
+	}
+
+	_impulse= FVector::ZeroVector;
+}
 
 
 void UHoldableActorComponent::BeDropped()
@@ -67,6 +88,12 @@ void UHoldableActorComponent::BeDropped()
 			StaticMeshPhysicsComponents[i]->SetSimulatePhysics(true);
 		}
 	}
+}
+
+void UHoldableActorComponent::BeThrown(FVector impulse)
+{
+	_impulse = impulse;
+	GetWorld()->GetTimerManager().SetTimer(ImpulseApplyTimerHandle, this, &UHoldableActorComponent::ApplyImpulseToComponents, 0.01f);
 }
 
 void UHoldableActorComponent::BePickedUp()

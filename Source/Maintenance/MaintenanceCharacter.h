@@ -29,6 +29,8 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	FTimerHandle ThrowTimerHandle;
+
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -44,8 +46,21 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
 	AActor* CurrentlyHeldActor = nullptr;
 
+	//if false object will just be dropped with no velocity
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	bool bIsThrowing = false;
+
+	//how long do you need to hold drop button for state to change o throw
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	float ThrowTime = 1.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	float ThrowStrength = 500.f;
+
 protected:
 
+	void ChangeToThrow();
+	
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -72,6 +87,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
     void Throw();
+
+	UFUNCTION(BlueprintCallable)
+	void BeginThrow();
 	
 protected:
 	// APawn interface
