@@ -139,13 +139,15 @@ void AMaintenanceCharacter::Interact()
                     hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()));
 				if (comp != nullptr)
 				{
-					CurrentlyHeldActor = hit.GetActor();
-					CurrentlyHeldActor->SetActorEnableCollision(false);
-					CurrentlyHeldActor->DisableComponentsSimulatePhysics();
-					CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
-					CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,
-                                                          FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-					comp->BePickedUp();
+					if(comp->bCanBePickedUp)
+					{
+						CurrentlyHeldActor = hit.GetActor();
+						CurrentlyHeldActor->SetActorEnableCollision(false);
+						CurrentlyHeldActor->DisableComponentsSimulatePhysics();
+						CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+						CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,  FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+						comp->BePickedUp();
+					}
 				}
 			}
 			else

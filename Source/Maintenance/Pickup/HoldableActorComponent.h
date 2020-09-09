@@ -7,7 +7,7 @@
 #include "HoldableActorComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent),Blueprintable )
 class MAINTENANCE_API UHoldableActorComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -36,11 +36,34 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=PhysicsComponents)
 	FName PhysComponentsTag = TEXT("PhysComp");
 
+	//to prevent actor from picked up during some sections
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	bool bCanBePickedUp = true;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void BeDropped();
 
 	UFUNCTION(BlueprintCallable)
     virtual void BeThrown(FVector impulse);
+
+	//to use with custom components(line apex's dstruction)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	void ChildOnBeDropped();
+	
+	void ChildOnBeDropped_Implementation(){}
+	
+	//to use with custom components(line apex's dstruction)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void ChildOnBePickedup();
+	
+	void ChildOnBePickedup_Implementation(){}
+
+	//to use with custom components(line apex's dstruction)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void ChildOnThrown(FVector impulse);
+	
+	void ChildOnThrown_Implementation(FVector impulse){}
+	
 
 	UFUNCTION(BlueprintCallable)
     virtual void BePickedUp();

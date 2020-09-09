@@ -66,7 +66,8 @@ void UHoldableActorComponent::ApplyImpulseToComponents()
 			StaticMeshPhysicsComponents[i]->AddImpulse(_impulse);
 		}
 	}
-
+	ChildOnThrown(_impulse);
+	
 	_impulse= FVector::ZeroVector;
 }
 
@@ -88,6 +89,8 @@ void UHoldableActorComponent::BeDropped()
 			StaticMeshPhysicsComponents[i]->SetSimulatePhysics(true);
 		}
 	}
+	
+	ChildOnBeDropped();
 }
 
 void UHoldableActorComponent::BeThrown(FVector impulse)
@@ -113,6 +116,8 @@ void UHoldableActorComponent::BePickedUp()
 			StaticMeshPhysicsComponents[i]->SetSimulatePhysics(false);
 		}
 	}
+
+	ChildOnBePickedup();
 }
 
 // Called every frame
