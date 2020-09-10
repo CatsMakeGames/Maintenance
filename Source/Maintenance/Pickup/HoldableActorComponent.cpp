@@ -90,6 +90,8 @@ void UHoldableActorComponent::BeDropped()
 		}
 	}
 	
+	OnDropped.Broadcast();
+	
 	ChildOnBeDropped();
 }
 
@@ -116,7 +118,9 @@ void UHoldableActorComponent::BePickedUp()
 			StaticMeshPhysicsComponents[i]->SetSimulatePhysics(false);
 		}
 	}
-
+	
+	OnPickedUp.Broadcast();
+	
 	ChildOnBePickedup();
 }
 

@@ -6,6 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "HoldableActorComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPickedUpDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDroppedDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent),Blueprintable )
 class MAINTENANCE_API UHoldableActorComponent : public UActorComponent
@@ -27,6 +30,12 @@ private:
 
 	void ApplyImpulseToComponents();
 public:
+	UPROPERTY(BlueprintAssignable)
+	FOnPickedUpDelegate OnPickedUp;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDroppedDelegate OnDropped;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=PhysicsComponents)
 	TArray<UStaticMeshComponent*>StaticMeshPhysicsComponents;
 
