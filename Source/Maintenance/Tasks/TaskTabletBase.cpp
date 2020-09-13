@@ -40,6 +40,7 @@ void ATaskTabletBase::Update()
 			{
 				TaskDisplayTexts[i]->DestroyComponent(); //clear previous text
 			}
+			TaskDisplayTexts.Empty();
 		}
 
 

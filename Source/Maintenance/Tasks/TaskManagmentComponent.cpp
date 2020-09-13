@@ -56,18 +56,19 @@ void UTaskManagmentComponent::OnTaskProgressed_Implementation(FTask task, int am
 	{
 		for (int i = 0; i < CurrentTasks.Num(); i++)
 		{
-			if(CurrentTasks[i].Name == task.Name)
+			if (CurrentTasks[i].Name == task.Name)
 			{
-				if(CurrentTasks[i].CurrentCount+amount>=CurrentTasks[i].NeededCount)
+				if (CurrentTasks[i].CurrentCount + amount >= CurrentTasks[i].NeededCount)
 				{
 					OnTaskFromListCompleted.Broadcast(task);
 					CurrentTasks.RemoveAt(i);
 				}
 				else
 				{
-					OnTaskFromListProgressed.Broadcast(task,amount);
+					CurrentTasks[i].CurrentCount += amount;
+					OnTaskFromListProgressed.Broadcast(task, amount);
 				}
-				
+
 				return;
 			}
 		}
