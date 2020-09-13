@@ -10,6 +10,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTaskFromListCompletedDelegate,FTask, task);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnNewTaskAddedDelegate);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTaskFromListProgressedDelegate,FTask,task,int,amount);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -32,11 +34,17 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnTaskFromListProgressedDelegate OnTaskFromListProgressed;
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnNewTaskAddedDelegate OnNewTaskAdded;
+	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	TArray<FTask>CurrentTasks;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void AddTask(FTask task);
 
 	virtual void OnTaskCompleted_Implementation(FTask task) override;
 

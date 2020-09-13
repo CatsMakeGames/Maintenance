@@ -32,6 +32,12 @@ void UTaskManagmentComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	// ...
 }
 
+void UTaskManagmentComponent::AddTask(FTask task)
+{
+	CurrentTasks.Add(task);
+	OnNewTaskAdded.Broadcast();
+}
+
 void UTaskManagmentComponent::OnTaskCompleted_Implementation(FTask task)
 {
 	//when task is completed event is called and task is removed from list
