@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Tools/ToolBase.h"
+
 #include "MaintenanceCharacter.generated.h"
 
 class UInputComponent;
@@ -41,7 +43,7 @@ public:
 	float BaseLookUpRate;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
-	float InteractionLenght = 500.f;
+	float InteractionLength = 500.f;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
 	AActor* CurrentlyHeldActor = nullptr;
@@ -57,6 +59,13 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
 	float ThrowStrength = 500.f;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools)
+	TArray<AToolBase*> Tools;
+
+	//Id of selected tool. -1 for hand
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools)
+	int32 CurrentlySelectedToolId = -1;
+	
 protected:
 
 	void ChangeToThrow();
@@ -79,6 +88,17 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	//Selects specific tool. Return false if tool was NOT found
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	virtual bool SelectTool(FString name);
+
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	virtual bool AddTool(AToolBase*tool);
+
+	//Selects hand(physical objects that player can pickup)
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	virtual void SelectHand();
+	
 	UFUNCTION(BlueprintCallable)
 	void Interact();
 

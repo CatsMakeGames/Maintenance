@@ -116,13 +116,77 @@ void AMaintenanceCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+bool AMaintenanceCharacter::SelectTool(FString name)
+{
+	if (Tools.Num() > 0)
+	{
+		if (CurrentlyHeldActor != nullptr)
+		{
+			CurrentlyHeldActor->SetActorHiddenInGame(true);
+		}
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			if (Tools[i]->ToolName == name)
+			{
+				Tools[i]->SetActorHiddenInGame(false);
+				CurrentlySelectedToolId = i;
+				return true;
+			}
+			else
+			{
+				Tools[i]->SetActorHiddenInGame(true);
+			}
+		}
+	}
+	return false;
+}
+
+bool AMaintenanceCharacter::AddTool(AToolBase* tool)
+{
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			if(Tools[i]->ToolName == tool->ToolName)
+			{
+				return false;
+			}
+		}
+	}
+
+	tool->SetActorEnableCollision(false);
+	tool->DisableComponentsSimulatePhysics();
+	tool->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+	tool->AttachToComponent(ActorHoldingPosition,  FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	tool->SetActorHiddenInGame(true);
+	Tools.Add(tool);
+	
+	return true;
+}
+
+void AMaintenanceCharacter::SelectHand()
+{
+	CurrentlySelectedToolId = -1;
+	if (CurrentlyHeldActor != nullptr)
+	{
+		CurrentlyHeldActor->SetActorHiddenInGame(false);
+	}
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			Tools[i]->SetActorHiddenInGame(true);
+		}
+	}
+}
+
 void AMaintenanceCharacter::Interact()
 {
 	//do line trace
 	FHitResult hit;
 	FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
 	FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
-        InteractionLenght;
+        InteractionLength;
 
 	FCollisionQueryParams params = FCollisionQueryParams();
 	params.AddIgnoredActor(this);
@@ -133,7 +197,11 @@ void AMaintenanceCharacter::Interact()
 	{
 		if (hit.GetActor() != nullptr)
 		{
-			if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr && CurrentlyHeldActor == nullptr)
+			if(Cast<AToolBase>(hit.GetActor()) != nullptr)
+			{
+				AddTool(Cast<AToolBase>(hit.GetActor()));
+			}
+			else if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr && CurrentlyHeldActor == nullptr)
 			{
 				UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(
                     hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()));
@@ -171,7 +239,7 @@ void AMaintenanceCharacter::UseItem()
 		FHitResult hit;
 		FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
 		FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
-            InteractionLenght;
+            InteractionLength;
 
 		FCollisionQueryParams params = FCollisionQueryParams();
 		params.AddIgnoredActor(this);

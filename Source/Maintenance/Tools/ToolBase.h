@@ -27,6 +27,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
 	UHoldableActorComponent*Holdable;
+
+	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
+	FString ToolName = "Tool";
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
