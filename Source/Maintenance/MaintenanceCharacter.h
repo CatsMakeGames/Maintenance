@@ -99,6 +99,9 @@ protected:
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual void SelectHand();
 	
+	UFUNCTION(BlueprintPure,Category= Tools)
+	virtual bool HasTool(FString name);
+	
 	UFUNCTION(BlueprintCallable)
 	void Interact();
 

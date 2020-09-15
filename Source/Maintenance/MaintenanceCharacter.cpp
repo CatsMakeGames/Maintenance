@@ -180,6 +180,18 @@ void AMaintenanceCharacter::SelectHand()
 	}
 }
 
+bool AMaintenanceCharacter::HasTool(FString name)
+{
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			if (Tools[i]->ToolName == name) { return true; }
+		}
+	}
+	return false;
+}
+
 void AMaintenanceCharacter::Interact()
 {
 	//do line trace
@@ -233,33 +245,44 @@ void AMaintenanceCharacter::Interact()
 
 void AMaintenanceCharacter::UseItem()
 {
-	if(CurrentlyHeldActor != nullptr)
+	if(CurrentlySelectedToolId == -1)
 	{
-		//do line trace
-		FHitResult hit;
-		FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
-		FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
-            InteractionLength;
-
-		FCollisionQueryParams params = FCollisionQueryParams();
-		params.AddIgnoredActor(this);
-
-		GetWorld()->LineTraceSingleByChannel(hit, start, start + end, ECollisionChannel::ECC_Camera, params);
-
-		if (hit.bBlockingHit)
+		if(CurrentlyHeldActor != nullptr)
 		{
-			if (hit.GetActor() != nullptr)
+			//do line trace
+			FHitResult hit;
+			FVector start = GetFirstPersonCameraComponent()->GetComponentLocation();
+			FVector end = UKismetMathLibrary::GetForwardVector(GetFirstPersonCameraComponent()->GetComponentRotation()) *
+                InteractionLength;
+
+			FCollisionQueryParams params = FCollisionQueryParams();
+			params.AddIgnoredActor(this);
+
+			GetWorld()->LineTraceSingleByChannel(hit, start, start + end, ECollisionChannel::ECC_Camera, params);
+
+			if (hit.bBlockingHit)
 			{
-				if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+				if (hit.GetActor() != nullptr)
 				{
-					IInteractionInterface::Execute_UseItem(hit.GetActor(),CurrentlyHeldActor,hit.GetComponent()); // for stuff like keys
+					if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+					{
+						IInteractionInterface::Execute_UseItem(hit.GetActor(),CurrentlyHeldActor,hit.GetComponent()); // for stuff like keys
+					}
 				}
 			}
-		}
 
-		if (CurrentlyHeldActor->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(CurrentlyHeldActor) != nullptr))
+			if (CurrentlyHeldActor->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(CurrentlyHeldActor) != nullptr))
+			{
+				IInteractionInterface::Execute_UseItemInHand(CurrentlyHeldActor,this);//for stuff like flashlight
+			}
+		}
+	}
+	else if(Tools.IsValidIndex(CurrentlySelectedToolId))
+	{
+		
+		if (Tools[CurrentlySelectedToolId]->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(Tools[CurrentlySelectedToolId]) != nullptr))
 		{
-			IInteractionInterface::Execute_UseItemInHand(CurrentlyHeldActor,this);//for stuff like flashlight
+			IInteractionInterface::Execute_UseItemInHand(Tools[CurrentlySelectedToolId],this);//for stuff like flashlight
 		}
 	}
 }
