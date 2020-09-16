@@ -41,13 +41,14 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
             if(SeenActors.Find(Target) != INDEX_NONE)
             {
                 //still can see target, so we update last seen location
-                GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
+         
                 canSeeTarget = true;
             }
             else
             {
                 //no longer can see target
                 GetBlackboardComponent()->ClearValue(TEXT("Target"));
+                GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
                 Target = nullptr;
             }
         }
