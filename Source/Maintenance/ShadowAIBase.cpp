@@ -8,6 +8,7 @@
 #include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Hearing.h"
 
 AShadowAIBase::AShadowAIBase()
 {
@@ -30,7 +31,7 @@ void AShadowAIBase::BeginPlay()
            PatrolPoints = IAIInterface::Execute_GetPatrolPoints(GetPawn());
             if(PatrolPoints.Num() > 0 && GetBlackboardComponent() != nullptr) 
             {
-                GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),PatrolPoints[FMath::RandRange(0,PatrolPoints.Num())]);
+                GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),PatrolPoints[FMath::RandRange(0,PatrolPoints.Num()-1)]);
             }
         }
     }
@@ -68,9 +69,18 @@ void AShadowAIBase::UpdatePerceivedActors()
                     GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), actors[i]);
                     Target = Cast<AMaintenanceCharacter>(actors[i]);
                     GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
-                    return;
+                    break;
                 }
             }
+        }
+
+        //update hearing
+        actors.Empty();
+        Senses->GetCurrentlyPerceivedActors(UAISense_Hearing::StaticClass(),actors);
+        if(actors.Num() > 0)
+        {
+            //we just react to most recent noise
+            GetBlackboardComponent()->SetValueAsVector(TEXT("LastNoiseLocation"),actors[0]->GetActorLocation());
         }
     }
 }
