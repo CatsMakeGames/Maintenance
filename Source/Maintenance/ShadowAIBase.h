@@ -16,16 +16,10 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 {
 	GENERATED_BODY()
 	
-	protected:
-	FTimerHandle UpdateTimerHandle;
-	
 	public:
 	AShadowAIBase();
 
-	virtual void BeginPlay() override;
-
-	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
-	UAIPerceptionComponent* Senses;
+	//virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
 	UBehaviorTree* BehaviorTree;
@@ -37,5 +31,5 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 	AMaintenanceCharacter * Target;
 	
 	UFUNCTION(BlueprintCallable)
-	virtual void UpdatePerceivedActors();
+	virtual void UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActor*>HeardActors);
 };
