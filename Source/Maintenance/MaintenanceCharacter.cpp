@@ -287,6 +287,17 @@ void AMaintenanceCharacter::UseItem()
 	}
 }
 
+void AMaintenanceCharacter::GetCaught_Implementation()
+{
+	if(GetController()!=nullptr)
+	{
+		if(Cast<APlayerController>(GetController()))
+		{
+			DisableInput(Cast<APlayerController>(GetController()));
+		}
+	}
+}
+
 void AMaintenanceCharacter::Throw()
 {
 	if(CurrentlyHeldActor != nullptr)

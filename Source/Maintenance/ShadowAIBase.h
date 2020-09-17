@@ -19,7 +19,7 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 	public:
 	AShadowAIBase();
 
-	//virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadWrite,EditDefaultsOnly)
 	UBehaviorTree* BehaviorTree;
@@ -32,4 +32,8 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActor*>HeardActors);
+	
+	//returns assigned point
+	UFUNCTION(BlueprintCallable)
+	virtual AActor* AssignNewPatrolPoint();
 };

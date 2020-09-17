@@ -108,6 +108,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
     void UseItem();
 
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	void GetCaught();
+
+	void GetCaught_Implementation();
+
 	UFUNCTION(BlueprintCallable)
     void Throw();
 

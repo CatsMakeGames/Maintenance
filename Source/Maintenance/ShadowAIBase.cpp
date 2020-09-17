@@ -15,8 +15,10 @@ AShadowAIBase::AShadowAIBase()
   
 }
 
-/*void AShadowAIBase::BeginPlay()
+void AShadowAIBase::BeginPlay()
 {
+    Super::BeginPlay();
+    
     if(GetPawn() != nullptr)
     {
         if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
@@ -28,7 +30,7 @@ AShadowAIBase::AShadowAIBase()
             }
         }
     }
-}*/
+}
 
 void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActor*>HeardActors)
 {
@@ -74,4 +76,16 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
             GetBlackboardComponent()->SetValueAsVector(TEXT("LastNoiseLocation"),HeardActors[0]->GetActorLocation());
         }
     }
+}
+
+AActor* AShadowAIBase::AssignNewPatrolPoint()
+{
+    if (PatrolPoints.Num() > 0 && GetBlackboardComponent() != nullptr)
+    {
+        int32 id = FMath::RandRange(0, PatrolPoints.Num() - 1);
+        GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"), PatrolPoints[id]);
+
+        return PatrolPoints[id];
+    }
+    return nullptr;
 }
