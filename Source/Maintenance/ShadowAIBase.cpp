@@ -51,6 +51,7 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
                 //no longer can see target
                 GetBlackboardComponent()->ClearValue(TEXT("Target"));
                 GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
+                LastNoiseLocation = Target->GetActorLocation();
                 Target = nullptr;
             }
         }
@@ -64,6 +65,7 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
                     GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), SeenActors[i]);
                     Target = Cast<AMaintenanceCharacter>(SeenActors[i]);
                     GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
+                    LastNoiseLocation = Target->GetActorLocation();
                     break;
                 }
             }
@@ -74,6 +76,7 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
         {
             //we just react to most recent noise
             GetBlackboardComponent()->SetValueAsVector(TEXT("LastNoiseLocation"),HeardActors[0]->GetActorLocation());
+            LastSeenLocation = HeardActors[0]->GetActorLocation();
         }
     }
 }
@@ -86,6 +89,18 @@ AActor* AShadowAIBase::AssignNewPatrolPoint()
         GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"), PatrolPoints[id]);
 
         return PatrolPoints[id];
+    }
+    return nullptr;
+}
+
+AActor* AShadowAIBase::GetCurrentPatrolPoint()
+{
+    if (GetBlackboardComponent() != nullptr)
+    {
+        if (GetBlackboardComponent()->GetValueAsObject(TEXT("PatrolLocation")) != nullptr)
+        {
+            return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(TEXT("PatrolLocation")));
+        }
     }
     return nullptr;
 }

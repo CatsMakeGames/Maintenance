@@ -28,6 +28,12 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 	TArray<AActor*> PatrolPoints;
 
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	FVector LastNoiseLocation;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	FVector LastSeenLocation;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
 	AMaintenanceCharacter * Target;
 	
 	UFUNCTION(BlueprintCallable)
@@ -36,4 +42,7 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 	//returns assigned point
 	UFUNCTION(BlueprintCallable)
 	virtual AActor* AssignNewPatrolPoint();
+
+	UFUNCTION(BlueprintPure)
+	AActor* GetCurrentPatrolPoint();
 };

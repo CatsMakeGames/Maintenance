@@ -320,6 +320,23 @@ void AMaintenanceCharacter::Throw()
 	}
 }
 
+void AMaintenanceCharacter::ForcePickupActor(AActor* actor)
+{
+	UHoldableActorComponent* comp = Cast<UHoldableActorComponent>(actor->FindComponentByClass(UHoldableActorComponent::StaticClass()));
+	if (comp != nullptr)
+	{
+		if(comp->bCanBePickedUp)
+		{
+			CurrentlyHeldActor->SetActorEnableCollision(false);
+			CurrentlyHeldActor->DisableComponentsSimulatePhysics();
+			CurrentlyHeldActor->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+			CurrentlyHeldActor->SetActorRotation(FRotator::ZeroRotator);
+			CurrentlyHeldActor->AttachToComponent(ActorHoldingPosition,  FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			comp->BePickedUp();
+		}
+	}
+}
+
 void AMaintenanceCharacter::BeginThrow()
 {
 	GetWorldTimerManager().SetTimer(ThrowTimerHandle,this,&AMaintenanceCharacter::ChangeToThrow,ThrowTime,false);

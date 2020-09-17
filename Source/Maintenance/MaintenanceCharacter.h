@@ -31,6 +31,7 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Timers,SaveGame)
 	FTimerHandle ThrowTimerHandle;
 
 public:
@@ -42,28 +43,28 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction,SaveGame)
 	float InteractionLength = 500.f;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction,SaveGame)
 	AActor* CurrentlyHeldActor = nullptr;
 
 	//if false object will just be dropped with no velocity
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing,SaveGame)
 	bool bIsThrowing = false;
 
 	//how long do you need to hold drop button for state to change o throw
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing,SaveGame)
 	float ThrowTime = 1.f;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing,SaveGame)
 	float ThrowStrength = 500.f;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	TArray<AToolBase*> Tools;
 
 	//Id of selected tool. -1 for hand
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	int32 CurrentlySelectedToolId = -1;
 	
 protected:
@@ -115,6 +116,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
     void Throw();
+
+	//Used by save system. Attaches this actor to holding position
+	UFUNCTION(BlueprintCallable,Category=SaveSystem)
+	virtual void ForcePickupActor(AActor*actor);
 
 	UFUNCTION(BlueprintCallable)
 	void BeginThrow();
