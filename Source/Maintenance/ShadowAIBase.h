@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "MaintenanceCharacter.h"
+#include "AI/AIInterface.h"
+
 
 #include "ShadowAIBase.generated.h"
 
@@ -12,7 +14,7 @@
  * 
  */
 UCLASS()
-class MAINTENANCE_API AShadowAIBase : public AAIController
+class MAINTENANCE_API AShadowAIBase : public AAIController, public IAIInterface
 {
 	GENERATED_BODY()
 	
@@ -45,4 +47,6 @@ class MAINTENANCE_API AShadowAIBase : public AAIController
 
 	UFUNCTION(BlueprintPure)
 	AActor* GetCurrentPatrolPoint();
+
+	virtual EAIState GetCurrentAIState_Implementation() override;
 };

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "AIState.h"
 #include "UObject/Interface.h"
 #include "AIInterface.generated.h"
 
@@ -25,5 +27,13 @@ public:
 	//Called from AIController. Overriden in character
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	TArray<AActor*> GetPatrolPoints();
-	
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	EAIState GetCurrentAIState();
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	void OnSawTarget();
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void OnLostTarget();
 };

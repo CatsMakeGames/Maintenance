@@ -52,6 +52,13 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
                 GetBlackboardComponent()->ClearValue(TEXT("Target"));
                 GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
                 LastNoiseLocation = Target->GetActorLocation();
+                if(GetPawn()!=nullptr)
+                {
+                    if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
+                    {
+                        IAIInterface::Execute_OnLostTarget(GetPawn());
+                    }
+                }
                 Target = nullptr;
             }
         }
@@ -66,6 +73,13 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
                     Target = Cast<AMaintenanceCharacter>(SeenActors[i]);
                     GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
                     LastNoiseLocation = Target->GetActorLocation();
+                    if(GetPawn()!=nullptr)
+                    {
+                        if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
+                        {
+                            IAIInterface::Execute_OnSawTarget(GetPawn());
+                        }
+                    }
                     break;
                 }
             }
@@ -103,4 +117,13 @@ AActor* AShadowAIBase::GetCurrentPatrolPoint()
         }
     }
     return nullptr;
+}
+
+EAIState AShadowAIBase::GetCurrentAIState_Implementation()
+{
+    if(Target != nullptr)
+    {
+        return EAIState::EAS_Chase;
+    }
+    return EAIState::EAS_Normal;
 }
