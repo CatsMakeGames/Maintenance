@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "AI/AIInterface.h"
 #include "GameFramework/Character.h"
 #include "Tools/ToolBase.h"
 
@@ -11,7 +13,7 @@
 class UInputComponent;
 
 UCLASS(config=Game)
-class AMaintenanceCharacter : public ACharacter
+class AMaintenanceCharacter : public ACharacter,public IAIInterface
 {
 	GENERATED_BODY()
 
@@ -48,6 +50,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Interaction,SaveGame)
 	AActor* CurrentlyHeldActor = nullptr;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=SafeZone,SaveGame)
+	bool bIsInSafeZone = false;
 
 	//if false object will just be dropped with no velocity
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Throwing,SaveGame)
@@ -88,6 +93,8 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+	virtual bool CanBeSeen_Implementation() override;
 
 	//Selects specific tool. Return false if tool was NOT found
 	UFUNCTION(BlueprintCallable,Category= Tools)

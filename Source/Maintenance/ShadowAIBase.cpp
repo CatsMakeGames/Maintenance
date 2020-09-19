@@ -43,8 +43,10 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
             if(SeenActors.Find(Target) != INDEX_NONE)
             {
                 //still can see target, so we update last seen location
-         
-                canSeeTarget = true;
+                if(IAIInterface::Execute_CanBeSeen(Target))
+                {
+                    canSeeTarget = true;
+                }         
             }
             else
             {
@@ -69,18 +71,24 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
             {
                 if (Cast<AMaintenanceCharacter>(SeenActors[i]) != nullptr)
                 {
-                    GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), SeenActors[i]);
-                    Target = Cast<AMaintenanceCharacter>(SeenActors[i]);
-                    GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
-                    LastNoiseLocation = Target->GetActorLocation();
-                    if(GetPawn()!=nullptr)
+                    if (SeenActors[i]->Implements<UAIInterface>() || (Cast<IAIInterface>(SeenActors[i]) != nullptr))
                     {
-                        if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
+                        if(IAIInterface::Execute_CanBeSeen(SeenActors[i]))
                         {
-                            IAIInterface::Execute_OnSawTarget(GetPawn());
+                            GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), SeenActors[i]);
+                            Target = Cast<AMaintenanceCharacter>(SeenActors[i]);
+                            GetBlackboardComponent()->SetValueAsVector(TEXT("LastSeenLocation"),Target->GetActorLocation());
+                            LastNoiseLocation = Target->GetActorLocation();
+                            if(GetPawn()!=nullptr)
+                            {
+                                if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
+                                {
+                                    IAIInterface::Execute_OnSawTarget(GetPawn());
+                                }
+                            }
+                            break;
                         }
-                    }
-                    break;
+                    }                              
                 }
             }
         }

@@ -116,6 +116,11 @@ void AMaintenanceCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+bool AMaintenanceCharacter::CanBeSeen_Implementation()
+{
+	return !bIsInSafeZone;
+}
+
 bool AMaintenanceCharacter::SelectTool(FString name)
 {
 	if (Tools.Num() > 0)

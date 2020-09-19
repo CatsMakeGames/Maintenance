@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
     void OnLostTarget();
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	bool CanBeSeen();
 };

@@ -9,8 +9,8 @@ AMaintenanceGameMode::AMaintenanceGameMode()
 	: Super()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/Blueprints/Player/BP_Player"));
-	DefaultPawnClass = PlayerPawnClassFinder.Class;
+	
+	DefaultPawnClass = AMaintenanceCharacter::StaticClass();
 
 	// use our custom HUD class
 	HUDClass = AMaintenanceHUD::StaticClass();
