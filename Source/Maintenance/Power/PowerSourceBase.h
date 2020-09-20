@@ -37,14 +37,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=State)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=State,SaveGame)
 	bool bActivated = false;
 
 	//if false actor can only be activated
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=State)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=State,SaveGame)
 	bool bToggleable = false;
 	
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
 	TArray<APowerConsumerBase*> Consumers;
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Sound)
@@ -53,10 +53,10 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Sound)
 	USoundBase*DeactivationSound;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
 	int NeededKeyId = 0;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
 	bool bNeedsKey = false;
 
 	virtual  void Interact_Implementation(AActor* Interactor, UActorComponent* InteractedComponent) override;

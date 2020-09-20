@@ -25,13 +25,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
 	bool bOpen = false;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
 	int NeededKeyId = 0;
 
-	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
 	bool bNeedsKey = false;
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
