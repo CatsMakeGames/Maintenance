@@ -63,6 +63,8 @@ public:
 
 	virtual  void UseItem_Implementation(AActor* Item, UActorComponent* InteractedComponent) override;
 
+	virtual void UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInfo> &Keys) override;
+
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void OnPowerStateChanged();
 

@@ -42,5 +42,5 @@ public:
 	
 	virtual void Interact_Implementation(AActor* Interactor, UActorComponent* InteractedComponent) override;
 
-	virtual void UseItem_Implementation(AActor* Item, UActorComponent* InteractedComponent) override;
+	virtual void UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInfo> &Keys) override;
 };

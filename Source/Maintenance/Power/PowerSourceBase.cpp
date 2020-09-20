@@ -60,11 +60,30 @@ void APowerSourceBase::UseItem_Implementation(AActor* Item, UActorComponent* Int
 {
 	UActorComponent *keyComp = Item->FindComponentByClass(UKeyComponent::StaticClass());
 
-	if (keyComp != nullptr)
+	//Old code
+	/*if (keyComp != nullptr)
 	{
 		if (Cast<UKeyComponent>(keyComp)->KeyId == NeededKeyId)
 		{
 			bNeedsKey = false;
+		}
+	}*/
+}
+
+void APowerSourceBase::UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInfo>& Keys)
+{
+	for (int i = 0; i < Keys.Num(); i++)
+	{
+		if(Keys[i].KeyId == NeededKeyId)
+		{
+			bNeedsKey = false;
+			if(Keys[i].OneTimeUse)
+			{
+				if (interactor->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(interactor) != nullptr))
+				{
+					IInteractionInterface::Execute_RemoveKey(interactor,Keys[i].Name);
+				}
+			}
 		}
 	}
 }

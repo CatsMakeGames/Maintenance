@@ -73,9 +73,9 @@ void AMaintenanceCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AMaintenanceCharacter::LookUpAtRate);
 
-	PlayerInputComponent->BindAction("UseItem", IE_Pressed, this, &AMaintenanceCharacter::UseItem);
+	PlayerInputComponent->BindAction("UseItem", IE_Pressed, this, &AMaintenanceCharacter::PlayerUseItem);
 
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::Interact);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::PlayerInteract);
 
 	PlayerInputComponent->BindAction("Throw", IE_Released, this, &AMaintenanceCharacter::Throw);
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMaintenanceCharacter::BeginThrow);
@@ -119,6 +119,21 @@ void AMaintenanceCharacter::LookUpAtRate(float Rate)
 bool AMaintenanceCharacter::CanBeSeen_Implementation()
 {
 	return !bIsInSafeZone;
+}
+
+void AMaintenanceCharacter::RemoveKey_Implementation(const FString& keyName)
+{
+	if (Keys.Num() > 0)
+	{
+		for (int i = 0; i < Keys.Num(); i++)
+		{
+			if(Keys[i].Name == keyName)
+			{
+				Keys.RemoveAt(i);
+				return;
+			}
+		}
+	}
 }
 
 bool AMaintenanceCharacter::SelectTool(FString name)
@@ -197,7 +212,7 @@ bool AMaintenanceCharacter::HasTool(FString name)
 	return false;
 }
 
-void AMaintenanceCharacter::Interact()
+void AMaintenanceCharacter::PlayerInteract()
 {
 	//do line trace
 	FHitResult hit;
@@ -217,6 +232,16 @@ void AMaintenanceCharacter::Interact()
 			if(Cast<AToolBase>(hit.GetActor()) != nullptr)
 			{
 				AddTool(Cast<AToolBase>(hit.GetActor()));
+			}
+			else if(hit.GetActor()->FindComponentByClass(UKeyComponent::StaticClass())!= nullptr)
+			{
+				UKeyComponent*key = Cast<UKeyComponent>(hit.GetActor()->FindComponentByClass(UKeyComponent::StaticClass()));
+				if(key->bCanBePickedUp)
+				{
+					key->bKeyWasPickedUp = true;
+					Keys.Add(key->KeyInfo);
+					hit.GetActor()->Destroy();
+				}
 			}
 			else if (hit.GetActor()->FindComponentByClass(UHoldableActorComponent::StaticClass()) != nullptr && CurrentlyHeldActor == nullptr)
 			{
@@ -240,6 +265,11 @@ void AMaintenanceCharacter::Interact()
 				if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
 				{
 					IInteractionInterface::Execute_Interact(hit.GetActor(),this,hit.GetComponent());
+					
+					if(Keys.Num()>0)
+					{
+						IInteractionInterface::Execute_UseKeys(hit.GetActor(),this,Keys);
+					}
 				}
 			}
 		}
@@ -248,7 +278,7 @@ void AMaintenanceCharacter::Interact()
 
 
 
-void AMaintenanceCharacter::UseItem()
+void AMaintenanceCharacter::PlayerUseItem()
 {
 	if(CurrentlySelectedToolId == -1)
 	{

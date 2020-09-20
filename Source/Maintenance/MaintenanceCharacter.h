@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "AI/AIInterface.h"
+#include "Door/KeyComponent.h"
 #include "GameFramework/Character.h"
 #include "Tools/ToolBase.h"
 
@@ -13,7 +14,7 @@
 class UInputComponent;
 
 UCLASS(config=Game)
-class AMaintenanceCharacter : public ACharacter,public IAIInterface
+class AMaintenanceCharacter : public ACharacter,public IAIInterface,public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -72,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	int32 CurrentlySelectedToolId = -1;
 	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
+	TArray<FKeyInfo> Keys;
+	
 protected:
 
 	void ChangeToThrow();
@@ -96,6 +100,8 @@ protected:
 
 	virtual bool CanBeSeen_Implementation() override;
 
+	virtual void RemoveKey_Implementation(const FString& keyName) override;
+
 	//Selects specific tool. Return false if tool was NOT found
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual bool SelectTool(FString name);
@@ -111,10 +117,10 @@ protected:
 	virtual bool HasTool(FString name);
 	
 	UFUNCTION(BlueprintCallable)
-	void Interact();
+	void PlayerInteract();
 
 	UFUNCTION(BlueprintCallable)
-    void UseItem();
+    void PlayerUseItem();
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void GetCaught();

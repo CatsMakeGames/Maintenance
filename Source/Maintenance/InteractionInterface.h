@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Door/KeyComponent.h"
 #include "UObject/Interface.h"
 #include "InteractionInterface.generated.h"
+
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -30,4 +33,10 @@ public:
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
     void UseItemInHand(AActor*HoldingActor);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent,Category=Keys)
+	void UseKeys(AActor * interactor,const  TArray<FKeyInfo>& Keys);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent,Category=Keys)
+    void RemoveKey(const FString& keyName);
 };

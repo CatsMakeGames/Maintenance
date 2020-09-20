@@ -36,15 +36,20 @@ void ADoorBase::Interact_Implementation(AActor* Interactor, UActorComponent* Int
 	}
 }
 
-void ADoorBase::UseItem_Implementation(AActor* Item, UActorComponent* InteractedComponent)
+void ADoorBase::UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInfo> &Keys)
 {
-	UActorComponent *keyComp = Item->FindComponentByClass(UKeyComponent::StaticClass());
-
-	if (keyComp != nullptr)
+	for (int i = 0; i < Keys.Num(); i++)
 	{
-		if (Cast<UKeyComponent>(keyComp)->KeyId == NeededKeyId)
+		if(Keys[i].KeyId == NeededKeyId)
 		{
 			bNeedsKey = false;
+			if(Keys[i].OneTimeUse)
+			{
+				if (interactor->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(interactor) != nullptr))
+				{
+					IInteractionInterface::Execute_RemoveKey(interactor,Keys[i].Name);
+				}
+			}
 		}
 	}
 }
