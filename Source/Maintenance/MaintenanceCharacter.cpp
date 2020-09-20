@@ -260,16 +260,14 @@ void AMaintenanceCharacter::PlayerInteract()
 					}
 				}
 			}
-			else
+
+			if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
 			{
-				if (hit.GetActor()->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(hit.GetActor()) != nullptr))
+				IInteractionInterface::Execute_Interact(hit.GetActor(), this, hit.GetComponent());
+
+				if (Keys.Num() > 0)
 				{
-					IInteractionInterface::Execute_Interact(hit.GetActor(),this,hit.GetComponent());
-					
-					if(Keys.Num()>0)
-					{
-						IInteractionInterface::Execute_UseKeys(hit.GetActor(),this,Keys);
-					}
+					IInteractionInterface::Execute_UseKeys(hit.GetActor(), this, Keys);
 				}
 			}
 		}
