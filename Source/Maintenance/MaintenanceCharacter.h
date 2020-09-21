@@ -115,6 +115,10 @@ protected:
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual bool AddTool(AToolBase*tool);
 
+	//Used when save is loaded
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	void ReattachTools();
+
 	//Selects hand(physical objects that player can pickup)
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual void SelectHand();

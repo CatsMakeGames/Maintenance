@@ -224,6 +224,21 @@ bool AMaintenanceCharacter::AddTool(AToolBase* tool)
 	return true;
 }
 
+void AMaintenanceCharacter::ReattachTools()
+{
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			Tools[i]->SetActorEnableCollision(false);
+			Tools[i]->DisableComponentsSimulatePhysics();
+			Tools[i]->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+			Tools[i]->AttachToComponent(ActorHoldingPosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			Tools[i]->SetActorHiddenInGame(i == CurrentlySelectedToolId ? false : true);
+		}
+	}
+}
+
 void AMaintenanceCharacter::SelectHand()
 {
 	CurrentlySelectedToolId = -1;
