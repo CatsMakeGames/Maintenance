@@ -102,6 +102,12 @@ protected:
 
 	virtual void RemoveKey_Implementation(const FString& keyName) override;
 
+	virtual bool CanBeSeenByThisShadow_Implementation(AActor* Shadow, float SightRadius) override;
+
+	//returns first tool of this class
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	AToolBase* GetToolByClass(TSubclassOf<AToolBase> Class);
+	
 	//Selects specific tool. Return false if tool was NOT found
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual bool SelectTool(FString name);

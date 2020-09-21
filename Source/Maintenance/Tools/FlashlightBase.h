@@ -13,5 +13,7 @@ UCLASS()
 class MAINTENANCE_API AFlashlightBase : public AToolBase
 {
 	GENERATED_BODY()
-	
+	public:
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	bool bActivated = false;
 };

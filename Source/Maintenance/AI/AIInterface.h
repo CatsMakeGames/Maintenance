@@ -39,4 +39,7 @@ public:
 
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	bool CanBeSeen();
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent, Category=Sight)
+	bool CanBeSeenByThisShadow(AActor*Shadow,float SightRadius);
 };

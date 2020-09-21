@@ -16,6 +16,7 @@
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "Kismet/KismetMathLibrary.h"
 #include "Pickup/HoldableActorComponent.h"
+#include "Tools/FlashlightBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -134,6 +135,45 @@ void AMaintenanceCharacter::RemoveKey_Implementation(const FString& keyName)
 			}
 		}
 	}
+}
+
+bool AMaintenanceCharacter::CanBeSeenByThisShadow_Implementation(AActor* Shadow, float SightRadius)
+{
+	if(!bIsInSafeZone)
+	{
+		AFlashlightBase* light = Cast<AFlashlightBase>(GetToolByClass(AFlashlightBase::StaticClass()));
+		if (light != nullptr)
+		{
+			if (light->bActivated)
+			{				
+				return FVector::Distance(GetActorLocation(), Shadow->GetActorLocation()) < SightRadius / 2;			
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+AToolBase* AMaintenanceCharacter::GetToolByClass(TSubclassOf<AToolBase> Class)
+{
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			if (Tools[i]->GetClass() == Class) { Tools[i]; }
+		}
+	}
+	return nullptr;
 }
 
 bool AMaintenanceCharacter::SelectTool(FString name)

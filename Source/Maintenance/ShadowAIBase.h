@@ -40,6 +40,11 @@ class MAINTENANCE_API AShadowAIBase : public AAIController, public IAIInterface
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActor*>HeardActors);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	float GetSightRadius();
+
+	float GetSightRadius_Implementation(){return 3500.f;}
 	
 	//returns assigned point
 	UFUNCTION(BlueprintCallable)

@@ -43,7 +43,7 @@ void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActo
             if(SeenActors.Find(Target) != INDEX_NONE)
             {
                 //still can see target, so we update last seen location
-                if(IAIInterface::Execute_CanBeSeen(Target))
+                if(IAIInterface::Execute_CanBeSeenByThisShadow(Target,this,GetSightRadius()))
                 {
                     canSeeTarget = true;
                 }         
