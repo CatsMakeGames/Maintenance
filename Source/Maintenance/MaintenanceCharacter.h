@@ -75,6 +75,9 @@ public:
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	TArray<FKeyInfo> Keys;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
+	USoundBase*KeyPickupSound = nullptr;
 	
 protected:
 
@@ -136,6 +139,11 @@ protected:
 	void GetCaught();
 
 	void GetCaught_Implementation();
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void PickUpKey(FKeyInfo key);
+
+	void PickUpKey_Implementation(FKeyInfo key);
 
 	UFUNCTION(BlueprintCallable)
     void Throw();

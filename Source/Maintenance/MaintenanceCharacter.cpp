@@ -299,6 +299,7 @@ void AMaintenanceCharacter::PlayerInteract()
 				{
 					key->bKeyWasPickedUp = true;
 					Keys.Add(key->KeyInfo);
+					PickUpKey(key->KeyInfo);
 					hit.GetActor()->Destroy();
 				}
 			}
@@ -390,6 +391,14 @@ void AMaintenanceCharacter::GetCaught_Implementation()
 		{
 			DisableInput(Cast<APlayerController>(GetController()));
 		}
+	}
+}
+
+void AMaintenanceCharacter::PickUpKey_Implementation(FKeyInfo key)
+{
+	if(KeyPickupSound != nullptr)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(),KeyPickupSound);
 	}
 }
 
