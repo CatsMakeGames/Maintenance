@@ -34,6 +34,10 @@ void ADoorBase::Interact_Implementation(AActor* Interactor, UActorComponent* Int
 	{
 		Toggle();
 	}
+	else
+	{
+		PlayDoorLockedEffects();
+	}
 }
 
 void ADoorBase::UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInfo> &Keys)
@@ -50,6 +54,7 @@ void ADoorBase::UseKeys_Implementation(AActor* interactor,const ::TArray<FKeyInf
 					IInteractionInterface::Execute_RemoveKey(interactor,Keys[i].Name);
 				}
 			}
+			OnUnlocked();
 		}
 	}
 }

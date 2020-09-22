@@ -39,6 +39,15 @@ public:
 
 	void Toggle_Implementation(){}
 
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void OnUnlocked();
+
+	void OnUnlocked_Implementation(){}
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+    void PlayDoorLockedEffects();
+
+	void PlayDoorLockedEffects_Implementation(){}
 	
 	virtual void Interact_Implementation(AActor* Interactor, UActorComponent* InteractedComponent) override;
 
