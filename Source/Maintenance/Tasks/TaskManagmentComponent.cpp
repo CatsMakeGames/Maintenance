@@ -34,6 +34,14 @@ void UTaskManagmentComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UTaskManagmentComponent::AddTask(FTask task)
 {
+	if (CurrentTasks.Num() > 0)
+	{
+		for (int i = 0; i < CurrentTasks.Num(); i++)
+		{
+			if (CurrentTasks[i].Name == task.Name) { return; }
+		}
+	}
+
 	CurrentTasks.Add(task);
 	OnNewTaskAdded.Broadcast();
 }
@@ -66,13 +74,13 @@ void UTaskManagmentComponent::OnTaskProgressed_Implementation(FTask task, int am
 			{
 				if (CurrentTasks[i].CurrentCount + amount >= CurrentTasks[i].NeededCount)
 				{
-					OnTaskFromListCompleted.Broadcast(task);
+					OnTaskFromListCompleted.Broadcast(CurrentTasks[i]);
 					CurrentTasks.RemoveAt(i);
 				}
 				else
 				{
 					CurrentTasks[i].CurrentCount += amount;
-					OnTaskFromListProgressed.Broadcast(task, amount);
+					OnTaskFromListProgressed.Broadcast(CurrentTasks[i], amount);
 				}
 
 				return;
