@@ -184,19 +184,21 @@ bool AMaintenanceCharacter::SelectTool(FString name)
 		{
 			CurrentlyHeldActor->SetActorHiddenInGame(true);
 		}
+		bool bSelectedTool = false;
 		for (int i = 0; i < Tools.Num(); i++)
 		{
 			if (Tools[i]->ToolName == name)
 			{
 				Tools[i]->SetActorHiddenInGame(false);
 				CurrentlySelectedToolId = i;
-				return true;
+				bSelectedTool = true;
 			}
 			else
 			{
 				Tools[i]->SetActorHiddenInGame(true);
 			}
 		}
+		return bSelectedTool;
 	}
 	return false;
 }
@@ -219,6 +221,7 @@ bool AMaintenanceCharacter::AddTool(AToolBase* tool)
 	tool->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
 	tool->AttachToComponent(ActorHoldingPosition,  FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	tool->SetActorHiddenInGame(true);
+	tool->OnToolPickedUp();
 	Tools.Add(tool);
 	
 	return true;
@@ -235,6 +238,7 @@ void AMaintenanceCharacter::ReattachTools()
 			Tools[i]->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
 			Tools[i]->AttachToComponent(ActorHoldingPosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			Tools[i]->SetActorHiddenInGame(i == CurrentlySelectedToolId ? false : true);
+			Tools[i]->OnToolPickedUp();
 		}
 	}
 }

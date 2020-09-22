@@ -34,4 +34,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable)
+	void OnToolPickedUp();
+
+	void OnToolPickedUp_Implementation(){}
+
 };
