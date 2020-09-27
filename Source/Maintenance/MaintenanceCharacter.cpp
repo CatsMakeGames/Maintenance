@@ -170,7 +170,7 @@ AToolBase* AMaintenanceCharacter::GetToolByClass(TSubclassOf<AToolBase> Class)
 	{
 		for (int i = 0; i < Tools.Num(); i++)
 		{
-			if (Tools[i]->GetClass() == Class) { Tools[i]; }
+			if (Tools[i]->GetClass() == Class) { return Tools[i]; }
 		}
 	}
 	return nullptr;
