@@ -7,6 +7,7 @@
 #include "AI/AIInterface.h"
 #include "Door/KeyComponent.h"
 #include "GameFramework/Character.h"
+#include "Notes/StoryNote.h"
 #include "Tools/ToolBase.h"
 
 #include "MaintenanceCharacter.generated.h"
@@ -78,6 +79,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	USoundBase*KeyPickupSound = nullptr;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Notes,SaveGame)
+    TArray<FStoryNote> Notes;
 	
 protected:
 
@@ -128,6 +132,8 @@ protected:
 	
 	UFUNCTION(BlueprintPure,Category= Tools)
 	virtual bool HasTool(FString name);
+
+	
 	
 	UFUNCTION(BlueprintCallable)
 	void PlayerInteract();
