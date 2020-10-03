@@ -160,6 +160,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void BeginThrow();
+
+	//returns false if player has same note
+	UFUNCTION(BlueprintCallable)
+	virtual bool PickupNote(FStoryNote note);
 	
 protected:
 	// APawn interface

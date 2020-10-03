@@ -14,6 +14,9 @@ class MAINTENANCE_API AFlashlightBase : public AToolBase
 {
 	GENERATED_BODY()
 	public:
-	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
 	bool bActivated = false;
+
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
+	bool bCanBeActivated = true;
 };

@@ -445,3 +445,17 @@ void AMaintenanceCharacter::BeginThrow()
 {
 	GetWorldTimerManager().SetTimer(ThrowTimerHandle,this,&AMaintenanceCharacter::ChangeToThrow,ThrowTime,false);
 }
+
+bool AMaintenanceCharacter::PickupNote(FStoryNote note)
+{
+	if (Notes.Num() > 0)
+	{
+		for (int i = 0; i < Notes.Num(); i++)
+		{
+			if(Notes[i].DevName == note.DevName){return false;}
+		}
+	}
+	
+	Notes.Add(note);
+	return true;
+}
