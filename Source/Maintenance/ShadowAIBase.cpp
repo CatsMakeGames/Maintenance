@@ -115,6 +115,29 @@ AActor* AShadowAIBase::AssignNewPatrolPoint()
     return nullptr;
 }
 
+void AShadowAIBase::SetTarget(AActor* _target)
+{
+    GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), _target);
+    Target = Cast<AMaintenanceCharacter>(_target);
+}
+
+void AShadowAIBase::SetLastSeenLocation(FVector _lastSeenLocation)
+{
+    GetBlackboardComponent()->SetValueAsVector(TEXT("LastNoiseLocation"),_lastSeenLocation);
+    LastSeenLocation = _lastSeenLocation;
+}
+
+void AShadowAIBase::SetLastNoiseLocation(FVector _lastNoiseLocation)
+{
+    GetBlackboardComponent()->SetValueAsVector(TEXT("LastNoiseLocation"),_lastNoiseLocation);
+    LastSeenLocation = _lastNoiseLocation;
+}
+
+void AShadowAIBase::SetPatrolLocation(AActor* _PatrolNode)
+{
+    GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),_PatrolNode);
+}
+
 AActor* AShadowAIBase::GetCurrentPatrolPoint()
 {
     if (GetBlackboardComponent() != nullptr)

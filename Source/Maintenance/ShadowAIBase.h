@@ -49,6 +49,18 @@ class MAINTENANCE_API AShadowAIBase : public AAIController, public IAIInterface
 	//returns assigned point
 	UFUNCTION(BlueprintCallable)
 	virtual AActor* AssignNewPatrolPoint();
+	
+	UFUNCTION(BlueprintCallable,Category=SaveSystem)
+	virtual void SetTarget(AActor*_target);
+
+	UFUNCTION(BlueprintCallable,Category=SaveSystem)
+	virtual void SetLastSeenLocation(FVector _lastSeenLocation);
+
+	UFUNCTION(BlueprintCallable,Category=SaveSystem)
+	virtual void SetLastNoiseLocation(FVector _lastNoiseLocation);
+
+	UFUNCTION(BlueprintCallable,Category=SaveSystem)
+	virtual void SetPatrolLocation(AActor*_PatrolNode);
 
 	UFUNCTION(BlueprintPure)
 	AActor* GetCurrentPatrolPoint();
