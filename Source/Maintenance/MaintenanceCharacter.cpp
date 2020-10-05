@@ -233,12 +233,15 @@ void AMaintenanceCharacter::ReattachTools()
 	{
 		for (int i = 0; i < Tools.Num(); i++)
 		{
-			Tools[i]->SetActorEnableCollision(false);
-			Tools[i]->DisableComponentsSimulatePhysics();
-			Tools[i]->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
-			Tools[i]->AttachToComponent(ActorHoldingPosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			Tools[i]->SetActorHiddenInGame(i == CurrentlySelectedToolId ? false : true);
-			Tools[i]->OnToolPickedUp();
+			if(Tools[i] != nullptr && Tools[i]->IsValidLowLevel())
+			{
+				Tools[i]->SetActorEnableCollision(false);
+				Tools[i]->DisableComponentsSimulatePhysics();
+				Tools[i]->SetActorLocation(ActorHoldingPosition->GetComponentLocation());
+				Tools[i]->AttachToComponent(ActorHoldingPosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+				Tools[i]->SetActorHiddenInGame(i == CurrentlySelectedToolId ? false : true);
+				Tools[i]->OnToolPickedUp();
+			}
 		}
 	}
 }

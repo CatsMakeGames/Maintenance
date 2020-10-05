@@ -133,9 +133,10 @@ void AShadowAIBase::SetLastNoiseLocation(FVector _lastNoiseLocation)
     LastSeenLocation = _lastNoiseLocation;
 }
 
-void AShadowAIBase::SetPatrolLocation(AActor* _PatrolNode)
+void AShadowAIBase::SetPatrolLocation(AActor* _PatrolNode,TArray<AActor*> _PatrolPoints)
 {
     GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),_PatrolNode);
+    PatrolPoints = _PatrolPoints;
 }
 
 AActor* AShadowAIBase::GetCurrentPatrolPoint()

@@ -60,7 +60,7 @@ class MAINTENANCE_API AShadowAIBase : public AAIController, public IAIInterface
 	virtual void SetLastNoiseLocation(FVector _lastNoiseLocation);
 
 	UFUNCTION(BlueprintCallable,Category=SaveSystem)
-	virtual void SetPatrolLocation(AActor*_PatrolNode);
+	virtual void SetPatrolLocation(AActor*_PatrolNode,TArray<AActor*> _PatrolPoints);
 
 	UFUNCTION(BlueprintPure)
 	AActor* GetCurrentPatrolPoint();
