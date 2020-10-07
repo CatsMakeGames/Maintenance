@@ -14,6 +14,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Pickup/HoldableActorComponent.h"
 #include "Tools/FlashlightBase.h"
@@ -50,6 +52,30 @@ void AMaintenanceCharacter::BeginPlay()
 
 }
 
+void AMaintenanceCharacter::Tick(float DeltaSeconds)
+{
+	if(bIsRunning)
+	{
+		CurrentRunTime += DeltaSeconds;
+		if(CurrentRunTime >= MaxRunTime)
+		{
+			StopRunning();
+		}
+	}
+	else if(CurrentRunTime > 0)
+	{
+		CurrentRunTime -= DeltaSeconds;
+		if(CurrentRunTime <= 0)
+		{
+			CurrentRunTime = 0;
+			if(bIsRunButtonPressed)
+			{
+				StartRunning();
+			}
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -76,10 +102,27 @@ void AMaintenanceCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	PlayerInputComponent->BindAction("UseItem", IE_Pressed, this, &AMaintenanceCharacter::PlayerUseItem);
 
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AMaintenanceCharacter::StartRunning);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &AMaintenanceCharacter::StopRunning);
+
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMaintenanceCharacter::PlayerInteract);
 
 	PlayerInputComponent->BindAction("Throw", IE_Released, this, &AMaintenanceCharacter::Throw);
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &AMaintenanceCharacter::BeginThrow);
+}
+
+void AMaintenanceCharacter::StartRunning_Implementation()
+{
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = MaxRunSpeed;
+	bIsRunning = true;
+	bIsRunButtonPressed = true;
+}
+
+void AMaintenanceCharacter::StopRunning_Implementation()
+{
+	Cast<UCharacterMovementComponent>(GetMovementComponent())->MaxWalkSpeed = MaxWalkSpeed;
+	bIsRunning = false;
+	bIsRunButtonPressed = false;
 }
 
 void AMaintenanceCharacter::ChangeToThrow()

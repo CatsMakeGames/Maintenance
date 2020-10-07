@@ -35,6 +35,9 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	//used only for running
+	virtual void Tick(float DeltaSeconds) override;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Timers,SaveGame)
 	FTimerHandle ThrowTimerHandle;
 
@@ -82,9 +85,36 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Notes,SaveGame)
     TArray<FStoryNote> Notes;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Running,SaveGame)
+	float MaxRunTime = 5.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Running,SaveGame)
+	float CurrentRunTime = 0.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Running,SaveGame)
+	bool bIsRunning = false;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Movement,SaveGame)
+	float MaxWalkSpeed = 400.f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category= Movement,SaveGame)
+	float MaxRunSpeed = 800.f;
+
+	bool bIsRunButtonPressed = false;
 	
 protected:
 
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category=Running)
+	void StartRunning();
+
+	void StartRunning_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category=Running)
+    void StopRunning();
+
+	void StopRunning_Implementation();
+	
 	void ChangeToThrow();
 	
 	/** Handles moving forward/backward */
