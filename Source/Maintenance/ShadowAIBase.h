@@ -49,6 +49,10 @@ class MAINTENANCE_API AShadowAIBase : public AAIController, public IAIInterface
 	//returns assigned point
 	UFUNCTION(BlueprintCallable)
 	virtual AActor* AssignNewPatrolPoint();
+
+	UFUNCTION(BlueprintCallable,Category=Setup)
+	virtual void Setup();
+	
 	
 	UFUNCTION(BlueprintCallable,Category=SaveSystem)
 	virtual void SetTarget(AActor*_target);

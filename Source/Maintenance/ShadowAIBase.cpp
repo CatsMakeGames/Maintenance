@@ -19,17 +19,7 @@ void AShadowAIBase::BeginPlay()
 {
     Super::BeginPlay();
     
-    if(GetPawn() != nullptr)
-    {
-        if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
-        {
-           PatrolPoints = IAIInterface::Execute_GetPatrolPoints(GetPawn());
-            if(PatrolPoints.Num() > 0 && GetBlackboardComponent() != nullptr) 
-            {
-                GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),PatrolPoints[FMath::RandRange(0,PatrolPoints.Num()-1)]);
-            }
-        }
-    }
+    Setup();
 }
 
 void AShadowAIBase::UpdatePerceivedActors(TArray<AActor*>SeenActors,TArray<AActor*>HeardActors)
@@ -113,6 +103,21 @@ AActor* AShadowAIBase::AssignNewPatrolPoint()
         return PatrolPoints[id];
     }
     return nullptr;
+}
+
+void AShadowAIBase::Setup()
+{
+    if(GetPawn() != nullptr)
+    {
+        if (GetPawn()->Implements<UAIInterface>() || (Cast<IAIInterface>(GetPawn()) != nullptr))
+        {
+            PatrolPoints = IAIInterface::Execute_GetPatrolPoints(GetPawn());
+            if(PatrolPoints.Num() > 0 && GetBlackboardComponent() != nullptr) 
+            {
+                GetBlackboardComponent()->SetValueAsObject(TEXT("PatrolLocation"),PatrolPoints[FMath::RandRange(0,PatrolPoints.Num()-1)]);
+            }
+        }
+    }
 }
 
 void AShadowAIBase::SetTarget(AActor* _target)
