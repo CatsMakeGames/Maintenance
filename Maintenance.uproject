@@ -52,6 +52,11 @@
 			"Name": "ScreenFade",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/031bd60134e7451a966c0fec89eb680f"
+		},
+		{
+			"Name": "LightExplorer",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/4dc7591f494343f1ae6cac5192bb1f62"
 		}
 	]
 }
