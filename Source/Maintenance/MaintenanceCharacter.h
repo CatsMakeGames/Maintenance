@@ -145,6 +145,10 @@ protected:
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	AToolBase* GetToolByClass(TSubclassOf<AToolBase> Class);
 	
+	//Remove specific tool. Return false if tool was NOT found
+	UFUNCTION(BlueprintCallable,Category= Tools)
+	virtual bool RemoveTool(FString name);
+	
 	//Selects specific tool. Return false if tool was NOT found
 	UFUNCTION(BlueprintCallable,Category= Tools)
 	virtual bool SelectTool(FString name);

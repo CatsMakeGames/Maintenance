@@ -219,6 +219,23 @@ AToolBase* AMaintenanceCharacter::GetToolByClass(TSubclassOf<AToolBase> Class)
 	return nullptr;
 }
 
+bool AMaintenanceCharacter::RemoveTool(FString name)
+{
+	
+	if (Tools.Num() > 0)
+	{
+		for (int i = 0; i < Tools.Num(); i++)
+		{
+			if(Tools[i]->ToolName == name)
+			{
+				Tools.RemoveAt(i);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 bool AMaintenanceCharacter::SelectTool(FString name)
 {
 	if (Tools.Num() > 0)
