@@ -229,6 +229,10 @@ bool AMaintenanceCharacter::RemoveTool(FString name)
 			if(Tools[i]->ToolName == name)
 			{
 				Tools.RemoveAt(i);
+				if(CurrentlySelectedToolId == i)
+				{
+					SelectHand();
+				}
 				return true;
 			}
 		}
