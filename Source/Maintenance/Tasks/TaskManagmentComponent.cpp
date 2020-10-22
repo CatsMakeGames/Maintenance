@@ -56,7 +56,8 @@ void UTaskManagmentComponent::OnTaskCompleted_Implementation(FTask task)
 			if(CurrentTasks[i].Name == task.Name)
 			{
 				OnTaskFromListCompleted.Broadcast(task);
-				CurrentTasks.RemoveAt(i);
+				//CurrentTasks.RemoveAt(i);//old way
+				CurrentTasks[i].bCompleted = true;//new way. This way game can not add tasks that were completed
 				return;
 			}
 		}
@@ -75,7 +76,8 @@ void UTaskManagmentComponent::OnTaskProgressed_Implementation(FTask task, int am
 				if (CurrentTasks[i].CurrentCount + amount >= CurrentTasks[i].NeededCount)
 				{
 					OnTaskFromListCompleted.Broadcast(CurrentTasks[i]);
-					CurrentTasks.RemoveAt(i);
+					//CurrentTasks.RemoveAt(i);//old way
+					CurrentTasks[i].bCompleted = true;//new way. This way game can not add tasks that were completed
 				}
 				else
 				{

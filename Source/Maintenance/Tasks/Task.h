@@ -15,15 +15,18 @@ struct FTask: public FTableRowBase
 {
  GENERATED_BODY()
 public:
- UPROPERTY(BlueprintReadWrite,EditAnywhere)
+ UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
  FString Name;
  
- UPROPERTY(BlueprintReadWrite,EditAnywhere)
+ UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
  FText DisplayName;
  
- UPROPERTY(BlueprintReadWrite,EditAnywhere)
+ UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
  int NeededCount = 1;
  
- UPROPERTY(BlueprintReadWrite,EditAnywhere)
+ UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
  int CurrentCount = 0;
+
+ UPROPERTY(BlueprintReadWrite,EditAnywhere,SaveGame)
+ bool bCompleted = false;
 };

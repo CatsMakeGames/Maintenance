@@ -34,6 +34,10 @@ public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
 	bool bNeedsKey = false;
 
+	/*Exists only to help players*/
+	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category=Key,SaveGame)
+	FString KeyName;
+
 	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void Toggle();
 
