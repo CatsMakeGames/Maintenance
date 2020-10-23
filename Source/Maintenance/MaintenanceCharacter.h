@@ -76,6 +76,10 @@ public:
 	//Id of selected tool. -1 for hand
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	int32 CurrentlySelectedToolId = -1;
+
+	//this is for the ending. Player's tools will be removed and only gun will be available.
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
+	bool bHasGun = false;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Tools,SaveGame)
 	TArray<FKeyInfo> Keys;
@@ -109,6 +113,11 @@ protected:
 	void StartRunning();
 
 	void StartRunning_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category=Running)
+	void ShootGun();
+
+	void ShootGun_Implementation(){}
 
 	UFUNCTION(BlueprintNativeEvent,BlueprintCallable,Category=Running)
     void StopRunning();

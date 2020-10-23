@@ -408,7 +408,9 @@ void AMaintenanceCharacter::PlayerInteract()
 
 void AMaintenanceCharacter::PlayerUseItem()
 {
-	if(CurrentlySelectedToolId == -1)
+	if(!bHasGun)
+	{
+		if(CurrentlySelectedToolId == -1)
 	{
 		if(CurrentlyHeldActor != nullptr)
 		{
@@ -440,13 +442,18 @@ void AMaintenanceCharacter::PlayerUseItem()
 			}
 		}
 	}
-	else if(Tools.IsValidIndex(CurrentlySelectedToolId))
+		else if(Tools.IsValidIndex(CurrentlySelectedToolId))
 	{
 		
 		if (Tools[CurrentlySelectedToolId]->Implements<UInteractionInterface>() || (Cast<IInteractionInterface>(Tools[CurrentlySelectedToolId]) != nullptr))
 		{
 			IInteractionInterface::Execute_UseItemInHand(Tools[CurrentlySelectedToolId],this);//for stuff like flashlight
 		}
+	}
+	}
+	else
+	{
+		ShootGun();
 	}
 }
 
